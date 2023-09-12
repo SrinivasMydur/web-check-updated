@@ -183,7 +183,7 @@ export interface LoadingJob {
   retry?: () => void,
 }
 
-const jobNames = [
+export const jobNames = [
   'get-ip',
   'location',
   'ssl',
@@ -424,7 +424,7 @@ const ProgressLoader = (props: { loadStatus: LoadingJob[], showModal: (err: Reac
                 <span style={{color : barColors[state][0]}}> ({state})</span>.
                 <i>{(timeTaken && state !== 'loading') ? ` Took ${timeTaken} ms` : '' }</i>
                 { (retry && state !== 'success' && state !== 'loading') && <FailedJobActionButton onClick={retry}>↻ Retry</FailedJobActionButton> }
-                { (error && state === 'error') && <FailedJobActionButton onClick={() => showErrorModal(name, state, timeTaken, error)}>■ Show Error</FailedJobActionButton> }
+                { (error && state === 'error') && <FailedJobActionButton onClick={() => { console.log({error: error}); showErrorModal(name, state, timeTaken, error)}}>■ Show Error</FailedJobActionButton> }
                 { (error && state === 'skipped') && <FailedJobActionButton onClick={() => showErrorModal(name, state, timeTaken, error, true)}>■ Show Reason</FailedJobActionButton> }
               </li>
             );

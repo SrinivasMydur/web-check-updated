@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import colors from 'styles/colors';
 import { Card } from 'components/Form/Card';
 import Button from 'components/Form/Button';
+import { LoadingJob, jobNames } from './ProgressBar';
 
 const CardStyles = `
 margin: 0 auto 1rem auto;
@@ -39,9 +40,12 @@ const StyledIframe = styled.iframe`
   background: ${colors.background};
 `;
 
-const ViewRaw = (props: { everything: { id: string, result: any}[] }) => {
+const ViewRaw = (props: { loadStatus: LoadingJob[], everything: { id: string, result: any}[] }) => {
   const [resultUrl, setResultUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  const loadingTasksCount = jobNames.length - props.loadStatus.filter((val: LoadingJob) => val.state === 'loading').length;
+  const isDone = loadingTasksCount >= jobNames.length;
 
   const makeResults = () => {
     const result: {[key: string]: any} = {};
@@ -82,6 +86,13 @@ const ViewRaw = (props: { everything: { id: string, result: any}[] }) => {
     link.click();
     URL.revokeObjectURL(url);
   }
+
+  useEffect(() => {
+    if(isDone) {
+      handleDownload();
+    }
+  },[isDone])
+
   return (
     <Card heading="View / Download Raw Data" styles={CardStyles}>
       <div className="controls">
