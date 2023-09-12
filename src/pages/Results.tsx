@@ -164,6 +164,9 @@ const Results = (): JSX.Element => {
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [tags, setTags] = useState<string[]>([]);
 
+  useEffect(() => {
+    console.log({modalContent : modalContent})
+  },[modalContent])
   const clearFilters = () => {
     setTags([]);
     setSearchTerm('');
@@ -236,14 +239,19 @@ const Results = (): JSX.Element => {
 
   const api = process.env.REACT_APP_API_ENDPOINT || '/api'; // Where is the API hosted?
 
+  useEffect(() => {
+    console.log({address: address})
+  },[address])
+
   // Fetch and parse IP address for given URL
   const [ipAddress, setIpAddress] = useMotherHook({
     jobId: 'get-ip',
     updateLoadingJobs,
     addressInfo: { address, addressType, expectedAddressTypes: urlTypeOnly },
     fetchRequest: () => fetch(`${api}/get-ip?url=${address}`)
-    .then(res => parseJson(res))
-    .then(res => res.ip),
+    .then(res => console.log({res: res}))
+    // .then(res => res.ip)
+    .catch(err => console.log({err: err})),
   });
 
   useEffect(() => {
@@ -538,6 +546,7 @@ const Results = (): JSX.Element => {
     fetchRequest: () => fetch(`${api}/features?url=${address}`)
     .then(res => parseJson(res))
     .then(res => {
+      console.log({res: res})
       if (res.Errors && res.Errors.length > 0) {
         return { error: `No data returned, because ${res.Errors[0].Message || 'API lookup failed'}` };
       }
@@ -568,7 +577,7 @@ const Results = (): JSX.Element => {
     }
   }
 
-  // A list of state sata, corresponding component and title for each card
+  // A list of state data, corresponding component and title for each card
   const resultCardData = [
     {
       id: 'location',
@@ -922,7 +931,7 @@ const Results = (): JSX.Element => {
           }
           </Masonry>
       </ResultsContent>
-      <ViewRaw everything={resultCardData} />
+      <ViewRaw loadStatus={loadingJobs} everything={resultCardData} />
       <AdditionalResources url={address} />
       <Footer />
       <Modal isOpen={modalOpen} closeModal={()=> setModalOpen(false)}>{modalContent}</Modal>
