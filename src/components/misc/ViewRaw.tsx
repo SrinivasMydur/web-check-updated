@@ -89,16 +89,9 @@ const ViewRaw = (props: { loadStatus: LoadingJob[], everything: { id: string, re
 
   useEffect(() => {
     if(isDone) {
-      //handleDownload();
-    const blob = new Blob([JSON.stringify(makeResults(), null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'web-check-results.json';
-    link.click();
-    URL.revokeObjectURL(url);
+      handleDownload();
     }
-  },[isDone])
+  },[isDone,handleDownload])
 
   return (
     <Card heading="View / Download Raw Data" styles={CardStyles}>
